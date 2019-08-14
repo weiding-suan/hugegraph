@@ -346,12 +346,36 @@ public class HbaseSessions extends BackendSessionPool {
         }
 
         /**
+         * Add a row record to a table with ttl
+         */
+        public void put(String table, byte[] family, byte[] rowkey,
+                        Collection<BackendColumn> columns, long ttl) {
+            Put put = new Put(rowkey);
+            for (BackendColumn column : columns) {
+                put.addColumn(family, column.name, column.value);
+            }
+            put.setTTL(ttl);
+            this.batch(table, put);
+        }
+
+        /**
          * Add a row record to a table(can be used when adding an index)
          */
         public void put(String table, byte[] family,
                         byte[] rowkey, byte[] qualifier, byte[] value) {
             Put put = new Put(rowkey);
             put.addColumn(family, qualifier, value);
+            this.batch(table, put);
+        }
+
+        /**
+         * Add a row record to a table with ttl for index
+         */
+        public void put(String table, byte[] family, byte[] rowkey,
+                        byte[] qualifier, byte[] value, long ttl) {
+            Put put = new Put(rowkey);
+            put.addColumn(family, qualifier, value);
+            put.setTTL(ttl);
             this.batch(table, put);
         }
 

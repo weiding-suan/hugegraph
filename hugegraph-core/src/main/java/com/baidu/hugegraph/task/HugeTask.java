@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -37,6 +38,7 @@ import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.apache.tinkerpop.gremlin.structure.VertexProperty;
 import org.slf4j.Logger;
 
+import com.baidu.hugegraph.HugeException;
 import com.baidu.hugegraph.backend.id.Id;
 import com.baidu.hugegraph.backend.id.IdGenerator;
 import com.baidu.hugegraph.type.define.SerialEnum;
@@ -465,6 +467,23 @@ public class HugeTask<V> extends FutureTask<V> {
 
     private static <V> Collector<V, ?, Set<V>> toOrderSet() {
         return Collectors.toCollection(InsertionOrderUtil::newSet);
+    }
+
+    public void syncWait() {
+        try {
+            this.get();
+            assert this.completed();
+        } catch (ExecutionException e) {
+            Throwable cause = e.getCause();
+            if (cause instanceof RuntimeException) {
+                throw (RuntimeException) cause;
+            }
+            throw new HugeException("Async task failed with error: %s",
+                                    cause, cause.getMessage());
+        } catch (Exception e) {
+            throw new HugeException("Async task failed with error: %s",
+                                    e, e.getMessage());
+        }
     }
 
     public static final class P {

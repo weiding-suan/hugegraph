@@ -23,11 +23,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 
 import org.apache.tinkerpop.gremlin.structure.Graph;
 
-import com.baidu.hugegraph.HugeException;
 import com.baidu.hugegraph.HugeGraph;
 import com.baidu.hugegraph.backend.BackendException;
 import com.baidu.hugegraph.backend.id.Id;
@@ -477,20 +475,7 @@ public class SchemaTransaction extends IndexableTransaction {
         // If SCHEMA_SYNC_DELETION is true, wait async thread done before
         // continue. This is used when running tests.
         if (graph.configuration().get(CoreOptions.SCHEMA_SYNC_DELETION)) {
-            try {
-                task.get();
-                assert task.completed();
-            } catch (ExecutionException e) {
-                Throwable cause = e.getCause();
-                if (cause instanceof RuntimeException) {
-                    throw (RuntimeException) cause;
-                }
-                throw new HugeException("Async task failed with error: %s",
-                                        cause, cause.getMessage());
-            } catch (Exception e) {
-                throw new HugeException("Async task failed with error: %s",
-                                        e, e.getMessage());
-            }
+            task.syncWait();
         }
         return task.id();
     }

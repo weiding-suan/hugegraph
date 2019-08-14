@@ -301,6 +301,9 @@ public class HugeVertex extends HugeElement implements Vertex, Cloneable {
         this.addOutEdge(edge);
         targetVertex.addInEdge(edge.switchOwner());
 
+        // Set expired time
+        edge.setExpiredTime();
+
         return this.tx().addEdge(edge);
     }
 

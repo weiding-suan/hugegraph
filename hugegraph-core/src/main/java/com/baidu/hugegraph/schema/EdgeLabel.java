@@ -27,6 +27,7 @@ import java.util.Map;
 
 import com.baidu.hugegraph.HugeGraph;
 import com.baidu.hugegraph.backend.id.Id;
+import com.baidu.hugegraph.backend.id.IdGenerator;
 import com.baidu.hugegraph.schema.builder.SchemaBuilder;
 import com.baidu.hugegraph.type.HugeType;
 import com.baidu.hugegraph.type.define.Frequency;
@@ -38,11 +39,15 @@ public class EdgeLabel extends SchemaLabel {
     private Id targetLabel;
     private Frequency frequency;
     private List<Id> sortKeys;
+    private long ttl;
+    private Id ttlStartTime;
 
     public EdgeLabel(final HugeGraph graph, Id id, String name) {
         super(graph, id, name);
         this.frequency = Frequency.DEFAULT;
         this.sortKeys = new ArrayList<>();
+        this.ttl = 0L;
+        this.ttlStartTime = IdGenerator.ZERO;
     }
 
     @Override
@@ -106,6 +111,22 @@ public class EdgeLabel extends SchemaLabel {
         this.sortKeys.addAll(Arrays.asList(ids));
     }
 
+    public void ttl(long ttl) {
+        this.ttl = ttl;
+    }
+
+    public long ttl() {
+        return this.ttl;
+    }
+
+    public void ttlStartTime(Id id) {
+        this.ttlStartTime = id;
+    }
+
+    public Id ttlStartTime() {
+        return this.ttlStartTime;
+    }
+
     public interface Builder extends SchemaBuilder<EdgeLabel> {
 
         Id rebuildIndex();
@@ -127,6 +148,10 @@ public class EdgeLabel extends SchemaLabel {
         Builder nullableKeys(String... keys);
 
         Builder frequency(Frequency frequency);
+
+        Builder ttl(long ttl);
+
+        Builder ttlStartTime(String ttlStartTime);
 
         Builder enableLabelIndex(boolean enable);
 

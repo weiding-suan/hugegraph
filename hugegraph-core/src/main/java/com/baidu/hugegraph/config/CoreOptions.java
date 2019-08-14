@@ -188,6 +188,22 @@ public class CoreOptions extends OptionHolder {
                     false
             );
 
+    public static final ConfigOption<Boolean> EXPIRED_SYNC_DELETION =
+            new ConfigOption<>(
+                    "expired.sync_deletion",
+                    "Whether to delete expired object synchronously.",
+                    disallowEmpty(),
+                    false
+            );
+
+    public static final ConfigOption<Integer> EXPIRED_DELETE_BATCH =
+            new ConfigOption<>(
+                    "expired.delete_batch",
+                    "Whether to delete expired object synchronously.",
+                    rangeInt(1, 500),
+                    10
+            );
+
     public static final ConfigOption<Integer> VERTEX_CACHE_CAPACITY =
             new ConfigOption<>(
                     "vertex.cache_capacity",

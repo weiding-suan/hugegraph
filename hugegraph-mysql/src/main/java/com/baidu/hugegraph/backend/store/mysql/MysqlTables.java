@@ -183,6 +183,8 @@ public class MysqlTables {
             this.define.column(HugeKeys.ENABLE_LABEL_INDEX, BOOLEAN);
             this.define.column(HugeKeys.USER_DATA, LARGE_JSON);
             this.define.column(HugeKeys.STATUS, TINYINT);
+            this.define.column(HugeKeys.TTL, INT);
+            this.define.column(HugeKeys.TTL_START_TIME, DATATYPE_PK);
             this.define.keys(HugeKeys.ID);
         }
     }
@@ -281,6 +283,7 @@ public class MysqlTables {
             this.define.column(HugeKeys.SORT_VALUES, SMALL_TEXT);
             this.define.column(HugeKeys.OTHER_VERTEX, SMALL_TEXT);
             this.define.column(HugeKeys.PROPERTIES, LARGE_JSON);
+            this.define.column(HugeKeys.EXPIRED_TIME, BIGINT);
             this.define.keys(HugeKeys.OWNER_VERTEX, HugeKeys.DIRECTION,
                              HugeKeys.LABEL, HugeKeys.SORT_VALUES,
                              HugeKeys.OTHER_VERTEX);
@@ -420,6 +423,7 @@ public class MysqlTables {
             this.define.column(HugeKeys.FIELD_VALUES, SMALL_TEXT);
             this.define.column(HugeKeys.INDEX_LABEL_ID, DATATYPE_IL);
             this.define.column(HugeKeys.ELEMENT_IDS, SMALL_TEXT);
+            this.define.column(HugeKeys.EXPIRED_TIME, BIGINT);
             this.define.keys(HugeKeys.FIELD_VALUES,
                              HugeKeys.INDEX_LABEL_ID,
                              HugeKeys.ELEMENT_IDS);
@@ -468,6 +472,7 @@ public class MysqlTables {
             this.define.column(HugeKeys.INDEX_LABEL_ID, DATATYPE_IL);
             this.define.column(HugeKeys.FIELD_VALUES, NUMERIC);
             this.define.column(HugeKeys.ELEMENT_IDS, SMALL_TEXT);
+            this.define.column(HugeKeys.EXPIRED_TIME, BIGINT);
             this.define.keys(HugeKeys.INDEX_LABEL_ID,
                              HugeKeys.FIELD_VALUES,
                              HugeKeys.ELEMENT_IDS);
@@ -498,6 +503,7 @@ public class MysqlTables {
             this.define.column(HugeKeys.INDEX_LABEL_ID, DATATYPE_IL);
             this.define.column(HugeKeys.FIELD_VALUES, INT);
             this.define.column(HugeKeys.ELEMENT_IDS, SMALL_TEXT);
+            this.define.column(HugeKeys.EXPIRED_TIME, BIGINT);
             this.define.keys(HugeKeys.INDEX_LABEL_ID,
                              HugeKeys.FIELD_VALUES,
                              HugeKeys.ELEMENT_IDS);
@@ -520,6 +526,7 @@ public class MysqlTables {
             this.define.column(HugeKeys.INDEX_LABEL_ID, DATATYPE_IL);
             this.define.column(HugeKeys.FIELD_VALUES, NUMERIC);
             this.define.column(HugeKeys.ELEMENT_IDS, SMALL_TEXT);
+            this.define.column(HugeKeys.EXPIRED_TIME, BIGINT);
             this.define.keys(HugeKeys.INDEX_LABEL_ID,
                              HugeKeys.FIELD_VALUES,
                              HugeKeys.ELEMENT_IDS);
@@ -542,6 +549,7 @@ public class MysqlTables {
             this.define.column(HugeKeys.INDEX_LABEL_ID, DATATYPE_IL);
             this.define.column(HugeKeys.FIELD_VALUES, BIGINT);
             this.define.column(HugeKeys.ELEMENT_IDS, SMALL_TEXT);
+            this.define.column(HugeKeys.EXPIRED_TIME, BIGINT);
             this.define.keys(HugeKeys.INDEX_LABEL_ID,
                              HugeKeys.FIELD_VALUES,
                              HugeKeys.ELEMENT_IDS);
@@ -564,6 +572,7 @@ public class MysqlTables {
             this.define.column(HugeKeys.INDEX_LABEL_ID, DATATYPE_IL);
             this.define.column(HugeKeys.FIELD_VALUES, NUMERIC);
             this.define.column(HugeKeys.ELEMENT_IDS, SMALL_TEXT);
+            this.define.column(HugeKeys.EXPIRED_TIME, BIGINT);
             this.define.keys(HugeKeys.INDEX_LABEL_ID,
                              HugeKeys.FIELD_VALUES,
                              HugeKeys.ELEMENT_IDS);
@@ -585,6 +594,7 @@ public class MysqlTables {
             this.define.column(HugeKeys.INDEX_LABEL_ID, DATATYPE_IL);
             this.define.column(HugeKeys.FIELD_VALUES, SMALL_TEXT);
             this.define.column(HugeKeys.ELEMENT_IDS, SMALL_TEXT);
+            this.define.column(HugeKeys.EXPIRED_TIME, BIGINT);
             this.define.keys(HugeKeys.INDEX_LABEL_ID,
                              HugeKeys.FIELD_VALUES,
                              HugeKeys.ELEMENT_IDS);

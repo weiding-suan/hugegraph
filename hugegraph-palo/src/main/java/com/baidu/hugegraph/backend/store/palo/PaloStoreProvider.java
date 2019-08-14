@@ -60,8 +60,9 @@ public class PaloStoreProvider extends MysqlStoreProvider {
          * [1.4] #633: support unique index
          * [1.5] #661: reduce the storage of vertex/edge id
          * [1.6] #746: support userdata for indexlabel
+         * [1.7] #295: support ttl for edge label
          */
-        return "1.6";
+        return "1.7";
     }
 
     public static class PaloSchemaStore extends PaloStore {

@@ -41,6 +41,7 @@ import com.baidu.hugegraph.schema.IndexLabel;
 import com.baidu.hugegraph.structure.HugeEdge;
 import com.baidu.hugegraph.structure.HugeVertex;
 import com.baidu.hugegraph.type.HugeType;
+import com.baidu.hugegraph.util.DateUtil;
 import com.baidu.hugegraph.util.Events;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -193,10 +194,23 @@ public final class CachedGraphTransaction extends GraphTransaction {
             if (edges.size() <= MAX_CACHE_EDGES_PER_QUERY) {
                 this.edgesCache.update(id, edges);
             }
+        } else {
+            long now = DateUtil.now().getTime();
+            List<HugeEdge> survivedEdges = new ArrayList<>();
+            for (HugeEdge edge : edges) {
+                if (edge.expiredTime() != 0 && edge.expiredTime() < now) {
+                    GraphTransaction.asyncDeleteExpiredObject(graph(), edge);
+                } else {
+                    survivedEdges.add(edge);
+                }
+            }
+            if (survivedEdges.size() < edges.size()) {
+                this.edgesCache.update(id, survivedEdges);
+                edges = survivedEdges;
+            }
         }
         return edges.iterator();
     }
-
 
     @Override
     protected void commitMutation2Backend(BackendMutation... mutations) {

@@ -425,5 +425,9 @@ public abstract class InMemoryDBStore
         public boolean supportsAggregateProperty() {
             return false;
         }
+
+        @Override public boolean supportsTtl() {
+            return false;
+        }
     };
 }
