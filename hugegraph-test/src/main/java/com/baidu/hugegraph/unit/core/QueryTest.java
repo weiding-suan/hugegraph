@@ -21,6 +21,7 @@ package com.baidu.hugegraph.unit.core;
 
 import org.junit.Test;
 
+import com.baidu.hugegraph.backend.query.Aggregate.AggregateFunc;
 import com.baidu.hugegraph.backend.query.Query;
 import com.baidu.hugegraph.backend.query.Query.Order;
 import com.baidu.hugegraph.testutil.Assert;
@@ -43,27 +44,39 @@ public class QueryTest {
     @Test
     public void testToString() {
         Query query = new Query(HugeType.VERTEX);
-        Assert.assertEquals("Query for VERTEX", query.toString());
+        Assert.assertEquals("Query * from VERTEX", query.toString());
 
         query.page("p1");
-        Assert.assertEquals("Query for VERTEX page 'p1'", query.toString());
+        Assert.assertEquals("Query * from VERTEX page 'p1'", query.toString());
 
         query = new Query(HugeType.VERTEX);
         query.limit(10L);
-        Assert.assertEquals("Query for VERTEX limit 10", query.toString());
+        Assert.assertEquals("Query * from VERTEX limit 10", query.toString());
+
+        query = new Query(HugeType.VERTEX);
+        query.aggregate(AggregateFunc.COUNT, null);
+        query.limit(10L);
+        Assert.assertEquals("Query count(*) from VERTEX limit 10",
+                            query.toString());
+
+        query = new Query(HugeType.VERTEX);
+        query.aggregate(AggregateFunc.MAX, "age");
+        query.limit(10L);
+        Assert.assertEquals("Query max(age) from VERTEX limit 10",
+                            query.toString());
 
         query = new Query(HugeType.VERTEX);
         query.page("p2");
         query.limit(10L);
-        Assert.assertEquals("Query for VERTEX page 'p2', limit 10",
+        Assert.assertEquals("Query * from VERTEX page 'p2', limit 10",
                             query.toString());
 
         query = new Query(HugeType.VERTEX);
         query.page("p3");
         query.offset(100L);
         query.limit(10L);
-        Assert.assertEquals("Query for VERTEX page 'p3', offset 100, limit 10",
-                            query.toString());
+        Assert.assertEquals("Query * from VERTEX page 'p3', offset 100, " +
+                            "limit 10", query.toString());
 
         query = new Query(HugeType.VERTEX);
         query.page("");
@@ -71,7 +84,7 @@ public class QueryTest {
         query.limit(10L);
         query.order(HugeKeys.NAME, Order.ASC);
         query.order(HugeKeys.FIELDS, Order.DESC);
-        Assert.assertEquals("Query for VERTEX page '', offset 100, " +
+        Assert.assertEquals("Query * from VERTEX page '', offset 100, " +
                             "limit 10, order by {NAME=ASC, FIELDS=DESC}",
                             query.toString());
     }

@@ -31,7 +31,6 @@ import java.util.function.Function;
 import org.apache.tinkerpop.gremlin.util.iterator.IteratorUtils;
 
 import com.baidu.hugegraph.backend.id.Id;
-import com.baidu.hugegraph.backend.store.BackendEntry;
 import com.baidu.hugegraph.iterator.FlatMapperIterator;
 import com.baidu.hugegraph.iterator.MapperIterator;
 import com.baidu.hugegraph.iterator.Metadatable;
@@ -39,22 +38,22 @@ import com.baidu.hugegraph.type.Idfiable;
 import com.baidu.hugegraph.util.E;
 import com.baidu.hugegraph.util.InsertionOrderUtil;
 
-public class QueryResults {
+public class QueryResults<R> {
 
     private static final Iterator<?> EMPTY_ITERATOR = new EmptyIterator<>();
 
-    private static final QueryResults EMPTY = new QueryResults(emptyIterator(),
-                                                               Query.NONE);
+    private static final QueryResults<?> EMPTY = new QueryResults<>(
+                                                 emptyIterator(), Query.NONE);
 
-    private final Iterator<BackendEntry> results;
+    private final Iterator<R> results;
     private final List<Query> queries;
 
-    public QueryResults(Iterator<BackendEntry> results, Query query) {
+    public QueryResults(Iterator<R> results, Query query) {
         this(results);
         this.addQuery(query);
     }
 
-    public QueryResults(Iterator<BackendEntry> results) {
+    public QueryResults(Iterator<R> results) {
         this.results = results;
         this.queries = InsertionOrderUtil.newList();
     }
@@ -77,11 +76,11 @@ public class QueryResults {
         }
     }
 
-    public Iterator<BackendEntry> iterator() {
+    public Iterator<R> iterator() {
         return this.results;
     }
 
-    public List<BackendEntry> list() {
+    public List<R> list() {
         return IteratorUtils.list(this.results);
     }
 
@@ -155,11 +154,12 @@ public class QueryResults {
         }
     }
 
-    public static <T> QueryResults flatMap(Iterator<T> iterator,
-                                           Function<T, QueryResults> func) {
-        QueryResults[] qr = new QueryResults[1];
-        qr[0] = new QueryResults(new FlatMapperIterator<>(iterator, i -> {
-            QueryResults results = func.apply(i);
+    public static <T, R> QueryResults<R> flatMap(
+                  Iterator<T> iterator, Function<T, QueryResults<R>> func) {
+        @SuppressWarnings("unchecked")
+        QueryResults<R>[] qr = new QueryResults[1];
+        qr[0] = new QueryResults<>(new FlatMapperIterator<>(iterator, i -> {
+            QueryResults<R> results = func.apply(i);
             if (results == null) {
                 return null;
             }
@@ -169,14 +169,17 @@ public class QueryResults {
         return qr[0];
     }
 
-    public static QueryResults empty() {
-        return EMPTY;
+    @SuppressWarnings("unchecked")
+    public static <R> QueryResults<R> empty() {
+        return (QueryResults<R>) EMPTY;
     }
 
     @SuppressWarnings("unchecked")
     public static <T> Iterator<T> emptyIterator() {
         return (Iterator<T>) EMPTY_ITERATOR;
     }
+
+    public interface Fetcher<R> extends Function<Query, QueryResults<R>> {}
 
     private static class EmptyIterator<T> implements Iterator<T>, Metadatable {
 

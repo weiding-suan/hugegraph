@@ -162,6 +162,11 @@ public class CachedBackendStore implements BackendStore {
         }
     }
 
+    @Override
+    public Number queryNumber(Query query) {
+        return this.store.queryNumber(query);
+    }
+
     /**
      * Query as an Id for cache
      */

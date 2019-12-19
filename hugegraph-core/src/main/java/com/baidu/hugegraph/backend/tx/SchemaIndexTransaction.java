@@ -67,7 +67,7 @@ public class SchemaIndexTransaction extends AbstractTransaction {
 
     @Watched(prefix = "index")
     @Override
-    public QueryResults query(Query query) {
+    public QueryResults<BackendEntry> query(Query query) {
         if (query instanceof ConditionQuery) {
             ConditionQuery q = (ConditionQuery) query;
             if (q.allSysprop() && q.conditions().size() == 1 &&
@@ -79,7 +79,7 @@ public class SchemaIndexTransaction extends AbstractTransaction {
     }
 
     @Watched(prefix = "index")
-    private QueryResults queryByName(ConditionQuery query) {
+    private QueryResults<BackendEntry> queryByName(ConditionQuery query) {
         if (!this.needIndexForName()) {
             return super.query(query);
         }
