@@ -1051,31 +1051,7 @@ public class VertexCoreTest extends BaseCoreTest {
     }
 
     @Test
-    public void testQueryCount() {
-        HugeGraph graph = graph();
-        init10Vertices();
-
-        GraphTraversalSource g = graph.traversal();
-
-        Assert.assertEquals(10L, g.V().count().next());
-
-        Assert.assertEquals(2L, g.V().hasLabel("author").count().next());
-        Assert.assertEquals(3L, g.V().hasLabel("language").count().next());
-        Assert.assertEquals(5L, g.V().hasLabel("book").count().next());
-        Assert.assertEquals(8L, g.V().hasLabel("book", "language")
-                                     .count().next());
-
-        Assert.assertEquals(10L, g.V().count().min().next());
-        Assert.assertEquals(5L, g.V().hasLabel("book").count().max().next());
-
-        Assert.assertEquals(2L, g.V().hasLabel("author")
-                                     .values("age").count().next());
-        Assert.assertEquals(10L, g.V().hasLabel("author")
-                                      .values().count().next());
-    }
-
-    @Test
-    public void testSplicingId() {
+    public void testQueryWithSplicingId() {
         HugeGraph graph = graph();
         init10Vertices();
         List<Vertex> vertices = graph.traversal().V().toList();
@@ -3406,6 +3382,46 @@ public class VertexCoreTest extends BaseCoreTest {
                    .has("age", P.between(10, 30))
                    .toList();
         });
+    }
+
+    @Test
+    public void testQueryCount() {
+        HugeGraph graph = graph();
+
+        graph.schema().indexLabel("livedByAuthor").onV("author")
+             .secondary().by("lived").create();
+        graph.schema().indexLabel("ageByAuthor").onV("author")
+             .range().by("age").create();
+
+        init10Vertices();
+
+        GraphTraversalSource g = graph.traversal();
+
+        Assert.assertEquals(10L, g.V().count().next());
+
+        Assert.assertEquals(2L, g.V().hasLabel("author").count().next());
+        Assert.assertEquals(3L, g.V().hasLabel("language").count().next());
+        Assert.assertEquals(5L, g.V().hasLabel("book").count().next());
+        Assert.assertEquals(8L, g.V().hasLabel("book", "language")
+                                     .count().next());
+
+        Assert.assertEquals(1L, g.V().hasLabel("author")
+                                     .has("lived", "California")
+                                     .count().next());
+        Assert.assertEquals(1L, g.V().hasLabel("author")
+                                     .has("age", 61).count().next());
+        Assert.assertEquals(2L, g.V().hasLabel("author")
+                                     .has("age", P.gte(61)).count().next());
+        Assert.assertEquals(1L, g.V().hasLabel("author")
+                                     .has("age", P.lt(62)).count().next());
+
+        Assert.assertEquals(10L, g.V().count().min().next());
+        Assert.assertEquals(5L, g.V().hasLabel("book").count().max().next());
+
+        Assert.assertEquals(2L, g.V().hasLabel("author")
+                                     .values("age").count().next());
+        Assert.assertEquals(8L, g.V().hasLabel("author")
+                                     .values().count().next());
     }
 
     @Test
