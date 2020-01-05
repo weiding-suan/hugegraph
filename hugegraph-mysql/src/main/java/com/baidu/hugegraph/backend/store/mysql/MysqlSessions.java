@@ -429,7 +429,7 @@ public class MysqlSessions extends BackendSessionPool {
         }
 
         @Override
-        protected void reconnectIfNeeded() {
+        public void reconnectIfNeeded() {
             try {
                 this.execute("SELECT 1;");
             } catch (SQLException ignored) {
@@ -438,7 +438,7 @@ public class MysqlSessions extends BackendSessionPool {
         }
 
         @Override
-        protected void reset() {
+        public void reset() {
             // NOTE: this method may be called by other threads
             if (this.conn == null) {
                 return;
