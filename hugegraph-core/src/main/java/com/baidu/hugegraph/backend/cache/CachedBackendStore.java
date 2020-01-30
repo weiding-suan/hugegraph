@@ -30,6 +30,7 @@ import com.baidu.hugegraph.backend.store.BackendStore;
 import com.baidu.hugegraph.backend.store.BackendStoreProvider;
 import com.baidu.hugegraph.config.HugeConfig;
 import com.baidu.hugegraph.type.HugeType;
+import com.baidu.hugegraph.util.StringEncoding;
 
 /**
  * This class is unused now, just for debug or test
@@ -201,8 +202,7 @@ public class CachedBackendStore implements BackendStore {
 
         @Override
         public Object asObject() {
-            // TODO: improve
-            return null;
+            return this.id;
         }
 
         @Override
@@ -218,8 +218,7 @@ public class CachedBackendStore implements BackendStore {
 
         @Override
         public byte[] asBytes() {
-            // TODO: improve
-            return null;
+            return StringEncoding.encode(this.asString());
         }
 
         @Override
@@ -230,7 +229,7 @@ public class CachedBackendStore implements BackendStore {
         @Override
         public int length() {
             // TODO: improve
-            return 32;
+            return this.asString().length();
         }
     }
 }

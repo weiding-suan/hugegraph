@@ -72,11 +72,13 @@ public class BinaryInlineSerializer extends BinarySerializer {
 
         // Parse all properties and edges of a Vertex
         for (BackendColumn col : entry.columns()) {
-            if (id.edge()) {
+            // NOTE: the entry id type is vertex even if entry type is edge
+            if (entry.type().isEdge()) {
                 // Parse vertex edges
                 this.parseColumn(col, vertex);
             } else {
                 // Parse vertex properties
+                assert entry.type().isVertex();
                 assert entry.columnsSize() == 1 : entry.columnsSize();
                 this.parseVertex(col.value, vertex);
             }

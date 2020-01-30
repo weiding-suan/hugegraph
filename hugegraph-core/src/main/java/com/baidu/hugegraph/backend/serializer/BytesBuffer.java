@@ -644,9 +644,13 @@ public final class BytesBuffer {
         return new BinaryId(this.bytes(), null);
     }
 
-    public BinaryId parseId() {
+    public BinaryId parseId(HugeType type) {
+        if (type.isIndex()) {
+            return this.readIndexId(type);
+        }
         // Parse id from bytes
         int start = this.buffer.position();
+//        Id id = type.isEdge() ? this.readEdgeId() : this.readId();
         Id id = this.readId();
         int end = this.buffer.position();
         int len = end - start;
