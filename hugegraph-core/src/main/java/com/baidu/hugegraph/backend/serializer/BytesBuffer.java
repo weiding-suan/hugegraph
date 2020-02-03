@@ -73,6 +73,7 @@ public final class BytesBuffer {
     public static final int BUF_PROPERTY = 64;
 
     private ByteBuffer buffer;
+    private final boolean resize;
 
     public BytesBuffer() {
         this(DEFAULT_CAPACITY);
@@ -83,11 +84,13 @@ public final class BytesBuffer {
                         "Capacity exceeds max buffer capacity: %s",
                         MAX_BUFFER_CAPACITY);
         this.buffer = ByteBuffer.allocate(capacity);
+        this.resize = true;
     }
 
     public BytesBuffer(ByteBuffer buffer) {
         E.checkNotNull(buffer, "buffer");
         this.buffer = buffer;
+        this.resize = false;
     }
 
     public static BytesBuffer allocate(int capacity) {
@@ -141,6 +144,8 @@ public final class BytesBuffer {
         if (this.buffer.limit() - this.buffer.position() >= size) {
             return;
         }
+        // Can't resize for wrapped buffer since will change the origin ref
+        E.checkState(this.resize, "Can't resize for wrapped buffer");
 
         // Extra capacity as buffer
         int newcapacity = size + this.buffer.limit() + DEFAULT_CAPACITY;
